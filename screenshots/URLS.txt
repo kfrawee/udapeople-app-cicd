@@ -1,1 +1,2 @@
 https://github.com/kfrawee/udapeople-app-cicd
+http://udapeople-bfd4e7d.s3.amazonaws.com/index.html
