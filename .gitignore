@@ -70,5 +70,5 @@ node_modules
 dist
 
 keys/*
-screenshots/*
+# screenshots/*
 presentation.pptx
