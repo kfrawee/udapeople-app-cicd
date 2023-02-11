@@ -3,6 +3,16 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.1
 commands:
+  slack-notify:
+    description: Send slack notification for pipeline steps' status.
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -51,13 +61,8 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
+
 
   build-backend:
     docker:
@@ -75,13 +80,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
 
   test-frontend:
     docker:
@@ -96,13 +95,7 @@ jobs:
             cd frontend
             npm install
             npm run test
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
                 
   test-backend:
     docker:
@@ -117,13 +110,7 @@ jobs:
             cd backend
             npm install
             npm run test
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
               
   scan-frontend:
     docker:
@@ -142,13 +129,7 @@ jobs:
             # try “npm audit fix --force” again
             npm audit fix --force
             npm audit --audit-level=critical
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
 
   scan-backend:
     docker:
@@ -167,13 +148,7 @@ jobs:
             # try “npm audit fix --force” again
             npm audit fix --force
             npm audit --audit-level=critical
-      - slack/notify:
-          event: fail
-          mentions: '@Muhammad Elkfrawy'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack-notify
 
 #   deploy-infrastructure:
 #     docker:
