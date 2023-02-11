@@ -35,27 +35,6 @@ commands:
             fi
             
 jobs:
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -72,6 +51,9 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      # - slack/notify:
+      #     event: fail
+      #     template: basic_fail_1
 
   build-backend:
     docker:
@@ -103,6 +85,9 @@ jobs:
             cd frontend
             npm install
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
                 
   test-backend:
     docker:
@@ -117,7 +102,10 @@ jobs:
             cd backend
             npm install
             npm run test
-            
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+              
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -333,8 +321,6 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - notify:
-          context: slack-secrets
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
