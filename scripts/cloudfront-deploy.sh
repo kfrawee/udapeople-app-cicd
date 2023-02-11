@@ -1,6 +1,7 @@
 cd .circleci/files
 aws cloudformation deploy \
     --template-file cloudfront.yml \
-    --stack-name InitialStack\
+    --tags project=udapeople \
+    --stack-name udapeople-cloudfront\
     --parameter-overrides WorkflowID=eduyjdrjvu \
     --profile udacity1
