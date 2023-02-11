@@ -13,7 +13,7 @@ commands:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
- 
+
   install-ansible:
     description: Install Ansible
     steps:
@@ -35,7 +35,7 @@ commands:
             # Use n version manager to use Node.js v13.8.0
             sudo npm install --global n
             sudo n 13.8.0
-  
+
   slack-notify-steps:
     description: Send slack notification for pipeline steps' status.
     steps:
@@ -86,7 +86,7 @@ commands:
               npm install
               npm run migration:revert
             fi
-            
+
 jobs:
   build-frontend:
     docker:
@@ -114,7 +114,7 @@ jobs:
       - restore_cache:
           keys: [backend-deps]
       - run:
-          name: Build backend 
+          name: Build backend
           command: |
             cd backend
             npm install
@@ -138,7 +138,7 @@ jobs:
             npm install
             npm run test
       - slack-notify-steps
-                
+
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -153,7 +153,7 @@ jobs:
             npm install
             npm run test
       - slack-notify-steps
-              
+
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -205,7 +205,7 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -213,7 +213,7 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -248,8 +248,8 @@ jobs:
             cat inventory.txt
 
             ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment 
-      - slack-notify-steps  
+      - destroy-environment
+      - slack-notify-steps
 
   run-migrations:
     docker:
@@ -276,8 +276,8 @@ jobs:
               echo "No migrations are pending" 
             fi
       - destroy-environment
-      - revert-migrations    
-      - slack-notify-steps  
+      - revert-migrations
+      - slack-notify-steps
 
   deploy-frontend:
     docker:
@@ -308,11 +308,11 @@ jobs:
           command: |
             cd frontend
             npm run build
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive     
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
-      - revert-migrations    
-      - slack-notify-steps             
-  
+      - revert-migrations
+      - slack-notify-steps
+
   deploy-backend:
     docker:
       - image: cimg/python:3.10
@@ -352,66 +352,65 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
-      - revert-migrations    
+      - revert-migrations
       - slack-notify-steps
 
-#   smoke-test:
-#     docker:
-#       # Lightweight Docker image 
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#       - run:
-#           name: Backend smoke test.
-#           command: |
-#             # your code here
-#       - run:
-#           name: Frontend smoke test.
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  #   smoke-test:
+  #     docker:
+  #       # Lightweight Docker image
+  #     steps:
+  #       # Checkout code from git
+  #       - run:
+  #           name: Install dependencies
+  #           command: |
+  #             # your code here
+  #       - run:
+  #           name: Get backend url
+  #           command: |
+  #             # your code here
+  #       - run:
+  #           name: Backend smoke test.
+  #           command: |
+  #             # your code here
+  #       - run:
+  #           name: Frontend smoke test.
+  #           command: |
+  #             # your code here
+  #       # Here's where you will add some code to rollback on failure
 
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  #   cloudfront-update:
+  #     docker:
+  #       # Docker image here that supports AWS CLI
+  #     steps:
+  #       # Checkout code from git
+  #       - run:
+  #           name: Install dependencies
+  #           command: |
+  #             # your code here
+  #       - run:
+  #           name: Update cloudfront distribution
+  #           command: |
+  #             # your code here
+  #       # Here's where you will add some code to rollback on failure
 
-
-# cleanup:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Get old stack workflow id
-#           command: |
-#             # your code here
-#             export OldWorkflowID="the id here"
-#             export STACKS=[] #put the list of stacks here
-#       - run:
-#           name: Remove old stacks and files
-#           command: |
-#             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-#             then
-#               # your code here
-#             fi
+  # cleanup:
+  #     docker:
+  #       # Docker image here
+  #     steps:
+  #       # Checkout code from git
+  #       - run:
+  #           name: Get old stack workflow id
+  #           command: |
+  #             # your code here
+  #             export OldWorkflowID="the id here"
+  #             export STACKS=[] #put the list of stacks here
+  #       - run:
+  #           name: Remove old stacks and files
+  #           command: |
+  #             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+  #             then
+  #               # your code here
+  #             fi
   slack-notify-success-deployment:
     docker:
       - image: cimg/base:stable
@@ -419,7 +418,6 @@ jobs:
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
-         
 
 workflows:
   default:

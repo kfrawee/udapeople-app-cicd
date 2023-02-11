@@ -1,6 +1,5 @@
 ---
-
-- name: "configuration play." 
+- name: "configuration play."
   hosts: web
   user: ubuntu
   become: true
@@ -11,7 +10,7 @@
     ansible_python_interpreter: /usr/bin/python3
     ansible_host_key_checking: false
     ansible_stdout_callback: yaml
-  
+
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
       wait_for_connection:
@@ -21,7 +20,7 @@
       apt:
         name: python3
         update_cache: yes
-  
+
   environment:
     NODE_ENV: production
     VERSION: "1"
@@ -34,6 +33,6 @@
     TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-  
+
   roles:
     - deploy
