@@ -70,6 +70,6 @@ node_modules
 dist
 
 keys/*
-screenshots/**
-scripts/*
+# screenshots/**
+# scripts/*
 presentation.pptx
